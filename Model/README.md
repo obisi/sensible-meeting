@@ -1,0 +1,1 @@
+This directory will contain model related things: how to train and how to serve.
