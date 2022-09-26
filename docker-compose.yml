@@ -1,0 +1,33 @@
+version: '2.4'
+
+services: 
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    volumes:
+      - ./Backend:/app
+    container_name: sensible_meeting_backend
+    environment:
+      - RUN_IN_DOCKER=1
+    ports:
+      - 5000:5000
+    env_file:
+      - ./Backend/.env
+    restart: unless-stopped
+
+  model:
+    build:
+      context: ./Model
+      dockerfile: Dockerfile
+    volumes:
+      - ./Model:/
+    ports:
+      - 9000:5000
+    env_file:
+      - ./Model/.env
+    container_name: sensible_meeting_model
+    restart: unless-stopped
