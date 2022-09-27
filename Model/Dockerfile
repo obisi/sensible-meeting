@@ -1,10 +1,13 @@
-FROM python:3.8-slim-buster
+FROM python:3.7
 
-WORKDIR /python-docker
+WORKDIR /
 
+RUN pip3 install --upgrade cython==0.29.22
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
+# RUN python -m nltk.downloader punkt
 
 COPY . .
 
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+EXPOSE 9000
+CMD [ "python3", "models_server.py" ]
