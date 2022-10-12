@@ -1,0 +1,14 @@
+[Unit]
+Description=CO2 Monitor
+After=network-online.target
+
+[Service]
+ExecStart=/home/pi/.asdf/shims/node main.js
+WorkingDirectory=/home/pi/cs-project
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
