@@ -5,10 +5,17 @@ const table = "csproject_co2_reading";
 
 (async () => {
   const { store } = await db.init();
-  monitor.start(async (value) => {
-    const row = await store(table, { value: Number.isNaN(value) ? 0 : value });
+  const session_id = createSessionId();
 
+  monitor.start(async (value) => {
+    // console.log("ppm:", value);
+
+    const row = await store(table, { session_id, value });
     console.clear();
-    console.log("reading stored:", row);
+    console.log(`reading stored: ${row.value} ppm`);
   });
 })();
+
+function createSessionId() {
+  return new Date().getTime();
+}
