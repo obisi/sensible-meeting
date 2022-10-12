@@ -2,11 +2,11 @@ const GrovePi = require('grovepi').GrovePi
 const Board = GrovePi.board
 const AnalogSensor = GrovePi.sensors.base.Analog
 
-const DC_GAIN = 8.5;               // The DC gain of amplifier
-const READ_SAMPLE_INTERVAL = 50;   // How many samples to take in normal operation
-const READ_SAMPLE_TIMES = 5;       // The time interval (in ms) between each samples in normal operation
-const ZERO_POINT_VOLTAGE = 0.220;  // The output of the sensor in volts when the concentration of CO2 is 400PPM
-const REACTION_VOLTAGE = 0.030;    // The voltage drop of the sensor when move the sensor from air into 1000ppm CO2
+const DC_GAIN = 8.5;                // The DC gain of amplifier
+const READ_SAMPLE_INTERVAL = 50;    // How many samples to take in normal operation
+const READ_SAMPLE_TIMES = 5;        // The time interval (in ms) between each samples in normal operation
+const ZERO_POINT_VOLTAGE = 2 / 8.5; // The output of the sensor in volts when the concentration of CO2 is 400PPM
+const REACTION_VOLTAGE = 0.030;     // The voltage drop of the sensor when move the sensor from air into 1000ppm CO2
 
 /**
  * Two points are taken from the curve.
@@ -44,6 +44,8 @@ function start(onChange = console.log, msInterval = 1000) {
           if (countInterval == READ_SAMPLE_TIMES) {
             volt = (volt / READ_SAMPLE_TIMES) * 5 / 1024;
             ppm = calculatePPM(volt);
+
+            volt = 0;
             countInterval = 0;
           } else {
             countInterval++;
