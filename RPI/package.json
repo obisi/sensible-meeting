@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ava"
   },
   "keywords": [],
   "author": "",
@@ -13,5 +13,8 @@
     "dotenv": "^16.0.3",
     "grovepi": "^3.0.0",
     "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "ava": "^4.3.3"
   }
 }
