@@ -2,7 +2,8 @@ from flask import jsonify
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 
-from app.setting.config import CONFIGS as cf
+from Backend.app.setting.config import CONFIGS as cf
+from Model.Co2LevelEstimator.lstm_model import LSTM_CO2_Estimator
 
 
 class ModelBaseHandler(Resource):
@@ -26,10 +27,11 @@ class EstimateCO2Level(ModelBaseHandler):
         - should_terminate_meeting_in (float): predict when the meeting should end (in next N minutes)
         '''
         parser = RequestParser()
-        parser.add_argument("in_next", type=float, location="form", required=True)
-        in_next = parser.parse_args()["in_next"]
+        # parser.add_argument("sensor_id", type=float, location="form", required=True)
+        # in_next = parser.parse_args()["sensor_id"]
 
         # TODO: Call model to estimate Co2 level --> return to UI
+        
 
         response_mess = {
             'co2_level': 0.0,
