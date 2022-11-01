@@ -3,8 +3,6 @@ import torch
 import pandas as pd
 import numpy as np
 
-from Model.models_server import co2_level_estimation
-
 
 MODEL_PATH = '../models/lstm_model.pt'
 SCALER_PATH = '../models/lstm_scaler.pkl'
@@ -12,7 +10,8 @@ TIMEOUT = 100
 
 class LSTM_CO2_Estimator():
 
-    def __init__(self):
+    def __init__(self, len_lag_feat=10):
+        self.len_lag_feat = len_lag_feat
         self.load_model()
 
     def load_model(self):
