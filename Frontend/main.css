@@ -1,0 +1,26 @@
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-item {
+  width: 40%;
+}
+
+.connect-btn {
+  margin-top: 10px;
+}
+
+.start-btn {
+  margin-bottom: 20px;
+}
+
+h1.flex-item {
+  text-align: center;
+}
+
+h4.flex-item {
+  text-align: center;
+}
