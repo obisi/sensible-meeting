@@ -1,4 +1,5 @@
 import re
+import os
 
 from os import pardir
 from os.path import join, abspath, dirname
@@ -22,6 +23,10 @@ class BaseConfig(object):
         r'(?::\d+)?'  # optional port
     )
 
-    MODEL_URL = ""
+    PGDATABASE = os.getenv("PGDATABASE")
+    PGHOST = os.getenv("PGHOST")
+    PGPASSWORD = os.getenv("PGPASSWORD")
+    PGPORT = 7747
+    PGUSER = os.getenv("PGUSER")
 
 CONFIGS = BaseConfig()
