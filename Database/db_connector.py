@@ -1,5 +1,6 @@
 import os
 import sqlalchemy as db
+import pandas as pd
 
 import psycopg2
 import sensor_reading
@@ -136,6 +137,20 @@ class PostgreSQL_DB():
         db_data = cursor.fetchall()
         sensor_readings = self.parse_sql_to_sensor_readings(field_names, db_data)
         return sensor_readings
+
+    def read_session_data_relative_time_to_pandas(self, session_id: int, minutes: int) -> pd.DataFrame:
+        """Read relative session data from db to pandas
+
+        Args:
+            session_id (int): session id for query
+            minutes (int): minutes of timeframe for query
+
+        Returns:
+            pd.DataFrame: dataframe of sensor data
+        """
+        data = self.read_session_data_relative_time(session_id, minutes)
+        df = pd.DataFrame([x.to_dict() for x in data])
+        return df
     
 
     def read_session_data(self, session_id: int) -> list:
@@ -158,6 +173,19 @@ class PostgreSQL_DB():
         db_data = cursor.fetchall()
         sensor_readings = self.parse_sql_to_sensor_readings(field_names, db_data)
         return sensor_readings
+    
+    def read_session_data_to_pandas(self, session_id: int) -> pd.DataFrame:
+        """Read session data from database to pandas
+
+        Args:
+            session_id (int): session id to query to db
+
+        Returns:
+            pd.DataFrame: dataframe of sensor data
+        """
+        data = self.read_session_data(session_id)
+        df = pd.DataFrame([x.to_dict() for x in data])
+        return df
 
 
     def read_all_data(self) -> list:
@@ -172,6 +200,18 @@ class PostgreSQL_DB():
         db_data = cursor.fetchall()
         data = self.parse_sql_to_sensor_readings(field_names, db_data)
         return data
+    
+
+    def read_all_data_to_pandas(self) -> pd.DataFrame:
+        """Query all data from db and return as a pandas dataframe
+
+        Returns:
+            pd.DataFrame: dataframe of sensor readings
+        """
+        data = self.read_all_data()
+        df = pd.DataFrame([x.to_dict() for x in data])
+        return df
+
 
 
     def update_session_id(self, sensor_id: int, session_id: int, hours = 1) -> bool:

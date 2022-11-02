@@ -41,6 +41,9 @@ class sensor_reading():
             vals = [v != other.__dict__[k] for k, v in self.__dict__.items()]
             return any(vals)
     
+    def to_dict(self):
+        return self.__dict__
+    
 
     def check_value_types(self, values):
         if not isinstance(values, dict):
