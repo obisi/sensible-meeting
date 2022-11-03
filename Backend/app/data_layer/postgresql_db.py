@@ -28,12 +28,23 @@ class PostgreSQL_DB():
         except Exception as e:
             print(e)
 
-    def save_sensor_data(self, sensor_data):
+    def save_sensor_data(self, sensor_id, value, created_at, session_id):
         '''
         Save a new row of sensor data into DB
         '''
         try:
-            ## TODO: Write SQL code / Maybe use sqlalchemy to save data row
+            cursor = self.conn.cursor()
+            cursor.execute(
+                '''
+                INSERT INTO csproject_co2_reading (id, value, craeted_at, session_id)
+                VALUES ({}, {}, {}, {});
+                '''.format(
+                    sensor_id,
+                    value,
+                    created_at,
+                    session_id
+                )
+            )
             return True
         except Exception as e:
             print('[Error]', e)
@@ -74,3 +85,69 @@ class PostgreSQL_DB():
         except Exception as e:
             print('[Error]', e)
             return False
+
+    def register_session(self, sensor_id, num_people, location):
+        '''
+        Save a new row of session (sensor id, the timestamp session starts)
+        '''
+        try:
+            now_ts = datetime.datetime.now().timestamp()
+            cursor = self.conn.cursor()
+            cursor.execute(
+                '''
+                INSERT INTO session (sensor_id, start_at, num_people, location)
+                VALUES ({}, {}, {}, {});
+                '''.format(
+                    sensor_id,
+                    now_ts,
+                    num_people,
+                    location
+                )
+            )
+            # return "Session registered successfully"
+            return True
+        except Exception as e:
+            print('[Error]', e)
+            return False
+
+    def update_session(self, session_id, num_people, location, end_at):
+        '''
+        Save a new row of session (sensor id, the timestamp session starts)
+        '''
+        try:
+            now_ts = datetime.datetime.now().timestamp()
+            cursor = self.conn.cursor()
+            cursor.execute(
+                '''
+                UPDATE session SET 
+                    updated_at = {}
+                    end_at = {},
+                    num_people = {},
+                    location = '{}'
+                WHERE session_id = '{}'
+                '''.format(now_ts, end_at, num_people, location, session_id)
+            )
+            # return "Session terminated successfully"
+            return True
+        except Exception as e:
+            print('[Error]', e)
+            return False
+
+    def fetch_session(self, session_id):
+        '''
+        Fetch session by id
+        '''
+        try:
+            cursor = self.conn.cursor()
+            cursor.execute(
+                '''
+                SELECT * FROM session
+                WHERE session_id = '{}'
+                '''.format(session_id)
+            )
+            field_names = [i[0] for i in cursor.description]
+            session = cursor.fetchall()[0]         
+            return dict(zip(field_names,session))
+        except Exception as e:
+            print('[Error]', e)
+            return None
