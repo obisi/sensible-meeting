@@ -27,3 +27,5 @@ def register_rest_api(app):
 
     api.add_resource(RecordSensorData, "{}data_io/record".format(api_version_url))
     api.add_resource(EstimateCO2Level, "{}model/estimate_co2".format(api_version_url))
+    api.add_resource(RegisterSession, "{}session/register".format(api_version_url))
+    api.add_resource(TerminateSession, "{}session/terminate".format(api_version_url))
