@@ -16,6 +16,7 @@ def create_app(register_stuffs=True, config=CONFIGS):
 
 def register_rest_api(app):
     from app.api_handlers.data_handler import RecordSensorData
+    from app.api_handlers.session_handler import RegisterSession, TerminateSession
     from app.api_handlers.model_handler import EstimateCO2Level
 
     version = app.config["VERSION"]
