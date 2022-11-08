@@ -34,7 +34,7 @@ class EstimateCO2Level(ModelBaseHandler):
         session_id = parser.parse_args()["session_id"]
 
         model = LSTM_CO2_Estimator(len_lag_feat=10)
-        _from_date = date.today() - timedelta(minutes = 10)
+        _from_date = date.today() - timedelta(minutes = 10) # doesnt this output yesterday 23:50:00 ?
         db_data = self.db.load_sensor_data(session_id, _from_date, None)
         db_data = db_data.groupby(db_data.index // 60).mean()
         db_data = db_data.sort_values('timestamp', ascending=True).reset_index(drop=True)
