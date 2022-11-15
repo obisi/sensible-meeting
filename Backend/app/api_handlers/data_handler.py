@@ -4,7 +4,7 @@ from flask import jsonify
 from flask_restful import Resource
 from flask_restful.reqparse import RequestParser
 
-from app.setting.config import CONFIGS as cf
+from Backend.app.setting.config import CONFIGS as cf
 from Backend.app.data_layer.postgresql_db import PostgreSQL_DB
 
 date_format = '%Y-%m-%d %H:%M:%S.%f'
