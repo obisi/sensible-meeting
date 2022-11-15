@@ -6,7 +6,7 @@ import numpy as np
 
 from datetime import date, timedelta
 from os.path import join, abspath, dirname
-from app.setting.config import CONFIGS as cf
+from Backend.app.setting.config import CONFIGS as cf
 
 class PostgreSQL_DB():
 

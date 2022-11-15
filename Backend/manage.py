@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask import jsonify
 import os
 
-from app.factory import create_app
+from Backend.app.factory import create_app
 
 app = create_app()
 port = int(os.environ.get("PORT", 5000))
