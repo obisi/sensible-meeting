@@ -25,6 +25,7 @@ class PostgreSQL_DB():
                 host = cf.PGHOST, 
                 port = cf.PGPORT
             )
+            print(self.db)
         except Exception as e:
             print(e)
 
@@ -93,10 +94,11 @@ class PostgreSQL_DB():
         try:
             now_ts = datetime.datetime.now().timestamp()
             cursor = self.conn.cursor()
-            cursor.execute(
+            session_id = cursor.execute(
                 '''
                 INSERT INTO session (sensor_id, start_at, num_people, location)
-                VALUES ({}, {}, {}, {});
+                VALUES ({}, {}, {}, {})
+                RETURNING session_id;
                 '''.format(
                     sensor_id,
                     now_ts,
@@ -104,8 +106,7 @@ class PostgreSQL_DB():
                     location
                 )
             )
-            # return "Session registered successfully"
-            return True
+            return session_id
         except Exception as e:
             print('[Error]', e)
             return False
