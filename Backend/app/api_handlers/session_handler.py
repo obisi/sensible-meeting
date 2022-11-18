@@ -28,16 +28,16 @@ class RegisterSession(SessionHandler):
         - sensor_id : ID of the sensor
         '''
         parser = RequestParser()
-        parser.add_argument("sensor_id", type=str, required=True)
-        parser.add_argument("num_people", type=str, required=True)
-        parser.add_argument("location", type=str, required=True)
-        sensor_id = parser.parse_args()["sensor_id"]
-        num_people = parser.parse_args()["num_people"]
-        location = parser.parse_args()["location"]
+        parser.add_argument("sensor_id", type=int, location="json", required=True)
+        parser.add_argument("num_people", type=int, location="json", required=False)
+        parser.add_argument("location", type=str, location="json", required=False)
+        sensor_id = parser.parse_args().get("sensor_id")
+        num_people = parser.parse_args().get("num_people")
+        location = parser.parse_args().get("location")
 
-        is_ok = self.db.register_session(sensor_id, num_people, location)
-        if is_ok:
-            return jsonify({'is_ok': True, 'mess': 'Registered session successfully!'})
+        session_id = self.db.register_session(sensor_id, num_people, location)
+        if session_id:
+            return jsonify({'is_ok': True, 'session_id': session_id, 'mess': 'Registered session successfully!'})
         else:
             return jsonify({'is_ok': False, 'mess': 'Registered session unsuccessfully!'})
 
