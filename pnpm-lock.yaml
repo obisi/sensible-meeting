@@ -1,0 +1,20 @@
+lockfileVersion: 5.4
+
+specifiers:
+  getmac: ^5.20.0
+
+dependencies:
+  getmac: 5.20.0
+
+packages:
+
+  /@types/node/16.18.3:
+    resolution: {integrity: sha512-jh6m0QUhIRcZpNv7Z/rpN+ZWXOicUUQbSoWks7Htkbb9IjFQj4kzcX/xFCkjstCj5flMsN8FiSvt+q+Tcs4Llg==}
+    dev: false
+
+  /getmac/5.20.0:
+    resolution: {integrity: sha512-O9T855fb+Hx9dsTJHNv72ZUuA6Y18+BO/0ypPXf6s/tunzXqhc3kbQkNAl+9HVKVlwkWmglHS4LMoJ9YbymKYQ==}
+    engines: {node: '>=10'}
+    dependencies:
+      '@types/node': 16.18.3
+    dev: false
