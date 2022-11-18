@@ -16,7 +16,7 @@ def create_app(register_stuffs=True, config=CONFIGS):
 
 def register_rest_api(app):
     from Backend.app.api_handlers.data_handler import RecordSensorData
-    from Backend.app.api_handlers.session_handler import RegisterSession, TerminateSession
+    from Backend.app.api_handlers.session_handler import RegisterSession, TerminateSession, getSession
     from Backend.app.api_handlers.model_handler import EstimateCO2Level
 
     version = app.config["VERSION"]
@@ -29,3 +29,4 @@ def register_rest_api(app):
     api.add_resource(EstimateCO2Level, "{}model/estimate_co2".format(api_version_url))
     api.add_resource(RegisterSession, "{}session/register".format(api_version_url))
     api.add_resource(TerminateSession, "{}session/terminate".format(api_version_url))
+    api.add_resource(getSession, "{}session/get_session".format(api_version_url))
