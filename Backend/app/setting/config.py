@@ -24,6 +24,7 @@ class BaseConfig(object):
     )
 
     PGDATABASE = os.getenv("PGDATABASE")
+    print(PGDATABASE)
     PGHOST = os.getenv("PGHOST")
     PGPASSWORD = os.getenv("PGPASSWORD")
     PGPORT = 7747
