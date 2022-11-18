@@ -19,13 +19,12 @@ class PostgreSQL_DB():
         '''
         try:
             self.conn = psycopg2.connect(
-                database = cf.PGDATABASE, 
-                user = cf.PGUSER, 
-                password = cf.PGPASSWORD, 
-                host = cf.PGHOST, 
-                port = cf.PGPORT
+                database = 'railway',# cf.PGDATABASE, 
+                user = 'postgres', # cf.PGUSER, 
+                password = 'oVElIg2jo16d4xvDMUmX', # cf.PGPASSWORD, 
+                host = 'containers-us-west-33.railway.app', # cf.PGHOST, 
+                port = 7747 # cf.PGPORT
             )
-            print(self.db)
         except Exception as e:
             print(e)
 
@@ -51,7 +50,7 @@ class PostgreSQL_DB():
             print('[Error]', e)
             return False
 
-    def load_sensor_data(self, session_id, from_date=date.today(), to_date=date.today()+timedelta(days=1)):
+    def load_sensor_data(self, sensor_id, from_date=date.today(), to_date=date.today()+timedelta(days=1)):
         '''
         Load sensor data in latest N minutes
         '''
@@ -60,12 +59,12 @@ class PostgreSQL_DB():
             cursor.execute(
                 '''
                 SELECT * FROM csproject_co2_reading
-                WHERE session_id = '{}'
+                WHERE sensor_id = '{}'
                 AND created_at > '{}'
                 AND created_at < '{}'
                 ORDER BY created_at
                 '''.format(
-                    session_id,
+                    sensor_id,
                     from_date,
                     to_date
                 )
@@ -89,14 +88,28 @@ class PostgreSQL_DB():
 
     def register_session(self, sensor_id, num_people, location):
         '''
-        Save a new row of session (sensor id, the timestamp session starts)
+        Save a new row of csproject_sessions (sensor id, the timestamp session starts)
+        Terminate prev session of the same sensor id
         '''
         try:
             now_ts = datetime.datetime.now().timestamp()
             cursor = self.conn.cursor()
+            # update running session with same sensor_id
+            cursor.execute(
+                '''
+                UPDATE csproject_sessions SET 
+                    updated_at = {}
+                    end_at = {},
+                WHERE sensor_id = '{}' 
+                AND end_at IS NULL
+                '''.format(now_ts, now_ts, sensor_id)
+            )
+
+            # register new session
+            now_ts = datetime.datetime.now().timestamp()
             session_id = cursor.execute(
                 '''
-                INSERT INTO session (sensor_id, start_at, num_people, location)
+                INSERT INTO csproject_sessions (sensor_id, start_at, num_people, location)
                 VALUES ({}, {}, {}, {})
                 RETURNING session_id;
                 '''.format(
@@ -113,14 +126,14 @@ class PostgreSQL_DB():
 
     def update_session(self, session_id, num_people, location, end_at):
         '''
-        Save a new row of session (sensor id, the timestamp session starts)
+        Save a new row of csproject_sessions (sensor id, the timestamp session starts)
         '''
         try:
             now_ts = datetime.datetime.now().timestamp()
             cursor = self.conn.cursor()
             cursor.execute(
                 '''
-                UPDATE session SET 
+                UPDATE csproject_sessions SET 
                     updated_at = {}
                     end_at = {},
                     num_people = {},
@@ -134,7 +147,7 @@ class PostgreSQL_DB():
             print('[Error]', e)
             return False
 
-    def fetch_session(self, session_id):
+    def fetch_session(self, session_id, from_date=None):
         '''
         Fetch session by id
         '''
@@ -142,13 +155,24 @@ class PostgreSQL_DB():
             cursor = self.conn.cursor()
             cursor.execute(
                 '''
-                SELECT * FROM session
+                SELECT * FROM csproject_sessions
                 WHERE session_id = '{}'
                 '''.format(session_id)
             )
             field_names = [i[0] for i in cursor.description]
-            session = cursor.fetchall()[0]         
-            return dict(zip(field_names,session))
+            session = cursor.fetchall()[0]
+            if session:
+                session_sensor_id = session.get('sensor_id')
+                if from_date is None:
+                    from_date = session.get('start_at')
+                session_sensor_data = self.load_sensor_data(
+                    sensor_id=session_sensor_id, from_date=from_date, to_date=None
+                ).to_dict('records')
+                session_data = dict(zip(field_names,session))
+                session_data['sensor_records'] = session_sensor_data
+                return session_data
+            else:
+                return None
         except Exception as e:
             print('[Error]', e)
             return None

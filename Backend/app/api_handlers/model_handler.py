@@ -35,7 +35,8 @@ class EstimateCO2Level(ModelBaseHandler):
 
         model = LSTM_CO2_Estimator(len_lag_feat=10)
         _from_date = datetime.now() - timedelta(minutes = 10)
-        db_data = self.db.load_sensor_data(session_id, _from_date, None)
+        db_session = self.db.fetch_session(session_id=session_id, from_date=_from_date)
+        db_data = db_session.get('sensor_records') # self.db.load_sensor_data(session_id, _from_date, None)
         db_data = db_data.groupby(db_data.index // 60).mean()
         db_data = db_data.sort_values('timestamp', ascending=True).reset_index(drop=True)
         lag_features = db_data['value'].to_list()[-10:]
