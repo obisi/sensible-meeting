@@ -28,9 +28,9 @@ class RegisterSession(SessionHandler):
         - sensor_id : ID of the sensor
         '''
         parser = RequestParser()
-        parser.add_argument("sensor_id", type=int, location="form", required=True)
-        parser.add_argument("num_people", type=int, location="form", required=True)
-        parser.add_argument("location", type=str, location="form", required=True)
+        parser.add_argument("sensor_id", type=str, required=True)
+        parser.add_argument("num_people", type=str, required=True)
+        parser.add_argument("location", type=str, required=True)
         sensor_id = parser.parse_args()["sensor_id"]
         num_people = parser.parse_args()["num_people"]
         location = parser.parse_args()["location"]
@@ -53,7 +53,7 @@ class TerminateSession(SessionHandler):
         - session_id : ID of the sensor
         '''
         parser = RequestParser()
-        parser.add_argument("session", type=int, location="form", required=True)
+        parser.add_argument("session", type=str, required=True)
         session_id = parser.parse_args()["session"]
         db_session = self.db.fetch_session(session_id)
         now_ts = datetime.datetime.now().timestamp()
