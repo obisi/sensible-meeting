@@ -53,7 +53,7 @@ class TerminateSession(SessionHandler):
         - session_id : ID of the sensor
         '''
         parser = RequestParser()
-        parser.add_argument("session", type=int, location="form", required=True)
+        parser.add_argument("session", type=str, required=True)
         session_id = parser.parse_args()["session"]
         db_session = self.db.fetch_session(session_id)
         now_ts = datetime.datetime.now().timestamp()
