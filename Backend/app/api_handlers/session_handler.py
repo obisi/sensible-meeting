@@ -83,11 +83,7 @@ class getSession(SessionHandler):
         if db_session:
             estimation = estimate(db_session=db_session, estimator='lstm')
             # db_session['sensor_records'] = db_session['sensor_records'].to_dict('records')
-            ret = {
-                "is_ok": True,
-                "session_data": db_session,
-                "estimation": estimation
-            }
-            return jsonify({'is_ok': True, 'session_data': ret})
+            db_session['estimation'] = estimation
+            return jsonify({'is_ok': True, 'session_data': db_session})
         else:
             return jsonify({'is_ok': False, 'mess': 'The session does not existed!'})
