@@ -13,6 +13,8 @@ def estimate(db_session, estimator='lstm'):
     model = LSTM_CO2_Estimator()
     db_data = db_session.get('sensor_records')
     db_data = pd.DataFrame(db_data)
+    if len(db_data) < 300: # 5 min at least
+        return []
     db_data = db_data.groupby(db_data.index // 60).mean()
     db_data = db_data.sort_values('timestamp', ascending=True).reset_index(drop=True)
     lag_features = db_data['value'].tolist()[-10:]
