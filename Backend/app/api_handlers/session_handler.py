@@ -6,7 +6,7 @@ from flask_restful.reqparse import RequestParser
 
 from Backend.app.setting.config import CONFIGS as cf
 from Backend.app.data_layer.postgresql_db import PostgreSQL_DB
-from Backend.app.api_handlers.model_handler import ModelBaseHandler
+from Backend.app.api_handlers.model_handler import estimate
 
 
 class SessionHandler(Resource):
@@ -77,23 +77,17 @@ class getSession(SessionHandler):
         - session_id : ID of the sensor
         '''
         parser = RequestParser()
-        parser.add_argument("session", type=int, location="form", required=True)
-        session_id = parser.parse_args()["session"]
+        parser.add_argument("session_id", type=int, location="args", required=True)
+        session_id = parser.parse_args()["session_id"]
         db_session = self.db.fetch_session(session_id)
         if db_session:
-            session_data = db_session.read_session_data(session_id)
-            if session_data:
-                model_session = ModelBaseHandler()
-                prediction = model_session.post(session_id)
-
-                ret = {
-                    "is_ok": True,
-                    "session_data": session_data
-                }
-                ret.update(prediction)
-
-                return jsonify(ret)
-            else:
-                return jsonify({'is_ok': False, 'mess': 'Unable to get session data!'})
+            estimation = estimate(db_session=db_session, estimator='lstm')
+            # db_session['sensor_records'] = db_session['sensor_records'].to_dict('records')
+            ret = {
+                "is_ok": True,
+                "session_data": db_session,
+                "estimation": estimation
+            }
+            return jsonify({'is_ok': True, 'session_data': ret})
         else:
             return jsonify({'is_ok': False, 'mess': 'The session does not existed!'})
