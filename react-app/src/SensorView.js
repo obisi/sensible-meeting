@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,50 +13,75 @@ import { Line } from 'react-chartjs-2'
 import faker from 'faker'
 import axios from 'axios'
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+const labels = ['16.39', '16.40', '16.41', '16.42', '16.43', '16.44', '16.45']
+const threshold = ''
 
 export default function SensorView({ sensorId }) {
   const [state, setState] = useState({
     datasets: [],
   })
+  const [sessionId, setSessionId] = useState('')
+  const [intervalId, setIntervalId] = useState('')
 
-  const handleStartSession = async () => {
-    const response = await axios.post(
-      'http://localhost:5000/api/v1/session/register',
-      { sensor_id: '123', num_people: '1', location: 'asd' }
-    )
-    console.log('data: ', response.data)
-
+  const setGraphState = () => {
     setState({
       labels,
       datasets: [
         {
           label: 'Measured',
-          data: labels.map(() =>
-            faker.datatype.number({ min: -1000, max: 1000 })
-          ),
+          data: labels.map(() => faker.datatype.number({ min: 0, max: 1200 })),
           borderColor: 'rgb(255, 99, 132)',
           backgroundColor: 'rgba(255, 99, 132, 0.5)',
         },
         {
           label: 'Prediction',
-          data: labels.map(() =>
-            faker.datatype.number({ min: -1000, max: 1000 })
-          ),
+          data: labels.map(() => faker.datatype.number({ min: 0, max: 1200 })),
           borderColor: 'rgb(53, 162, 235)',
           backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        },
+        {
+          label: 'Threshold',
+          data: labels.map(() => 1000),
+          borderColor: 'rgb(255, 255, 0)',
+          backgroundColor: 'rgba(255, 255, 0, 0.5)',
         },
       ],
     })
   }
 
+  const handleStartSession = async () => {
+    const response = await axios.post(
+      'http://localhost:5000/api/v1/session/register',
+      { sensor_id: '2', num_people: '1', location: 'Helsinki' }
+    )
+    console.log('register data: ', response.data)
+
+    if (response.data.is_ok) {
+      setSessionId(response.data.session_id)
+
+      const intervalId = setInterval(() => {
+        axios
+          .get(
+            `http://localhost:5000/api/v1/session/get_session?session_id=${response.data.session_id}`
+          )
+          .then((response) => {
+            console.log('session data: ', response.data)
+            setGraphState()
+          })
+      }, 1000)
+
+      setIntervalId(intervalId)
+    }
+  }
+
   const handleStopSession = async () => {
     const response = await axios.post(
       'http://localhost:5000/api/v1/session/terminate',
-      { session: '1234' }
+      { session: sessionId }
     )
-    console.log('data: ', response.data)
-
+    console.log('terminate data: ', response.data)
+    setSessionId('')
+    clearInterval(intervalId)
     setState({
       labels,
       datasets: [],
