@@ -5,7 +5,7 @@ import os
 from Backend.app.factory import create_app
 
 app = create_app()
-port = int(os.environ.get("PORT", 5000))
+port = int(os.environ.get("PORT", 5005))
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 if __name__ == '__main__':
