@@ -177,7 +177,7 @@ class PostgreSQL_DB():
                 session_sensor_data = self.load_sensor_data(
                     sensor_id=session_sensor_id, from_date=from_date, to_date=None
                 ).to_dict('records')
-                session_data = dict(zip(field_names,session))
+                session_data = session.copy()
                 session_data['sensor_records'] = session_sensor_data
                 return session_data
             else:
