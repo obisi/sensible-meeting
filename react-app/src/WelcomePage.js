@@ -1,10 +1,9 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
 
 import './App.css'
 
 export default function WelcomePage({ sensorId, setSensorId }) {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   return (
     <div className="App">
@@ -18,7 +17,7 @@ export default function WelcomePage({ sensorId, setSensorId }) {
             onChange={(event) => setSensorId(event.target.value)}
           ></input>
           <br />
-          <button onClick={() => navigate('/sensor-view')}>Connect</button>
+          <button onClick={() => console.log('navigate')}>Connect</button>
         </div>
       </header>
     </div>

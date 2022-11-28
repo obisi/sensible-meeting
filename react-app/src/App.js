@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 
 import WelcomePage from './WelcomePage'
 import SensorView from './SensorView'
@@ -10,7 +10,7 @@ export default function App() {
 
   return (
     <div>
-      <Routes>
+      <Router>
         <Route
           path="/"
           element={
@@ -21,7 +21,7 @@ export default function App() {
           path="/sensor-view"
           element={<SensorView sensorId={sensorId} />}
         />
-      </Routes>
+      </Router>
     </div>
   )
 }
