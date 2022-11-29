@@ -78,7 +78,7 @@ export default function SensorView({ sensorId }) {
   const handleStartSession = async () => {
     const response = await axios.post(
       'http://localhost:5000/api/v1/session/register',
-      { sensor_id: '1', num_people: '1', location: 'Helsinki' }
+      { sensor_id: '2', num_people: '1', location: 'Helsinki' }
     )
     console.log('register data: ', response.data)
 
