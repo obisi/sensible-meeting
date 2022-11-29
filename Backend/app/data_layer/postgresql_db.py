@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 # import sqlalchemy as db
 
-from datetime import datetime, date, timedelta
+from datetime import datetime, timezone, date, timedelta
 from os.path import join, abspath, dirname
 from Backend.app.setting.config import CONFIGS as cf
 
@@ -60,10 +60,10 @@ class PostgreSQL_DB():
             from_date_filter=''
             to_date_filter=''
             if from_date:
-                from_date = datetime.fromtimestamp(from_date)
+                from_date = datetime.fromtimestamp(from_date, tz=timezone.utc)
                 from_date_filter = "AND created_at >= '{}'".format(from_date)
             if to_date:
-                to_date = datetime.fromtimestamp(to_date)
+                to_date = datetime.fromtimestamp(to_date, tz=timezone.utc)
                 to_date_filter = "AND created_at <= '{}'".format(to_date)
             cursor.execute(
                 '''
@@ -177,7 +177,7 @@ class PostgreSQL_DB():
                 session_sensor_data = self.load_sensor_data(
                     sensor_id=session_sensor_id, from_date=from_date, to_date=None
                 ).to_dict('records')
-                session_data = dict(zip(field_names,session))
+                session_data = session.copy()
                 session_data['sensor_records'] = session_sensor_data
                 return session_data
             else:
