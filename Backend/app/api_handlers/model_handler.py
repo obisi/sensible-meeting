@@ -45,20 +45,11 @@ class EstimateCO2Level(ModelBaseHandler):
         parser = RequestParser()
         parser.add_argument("session_id", type=float, location="form", required=True)
         session_id = parser.parse_args()["session_id"]
-
         
         _from_date = datetime.now() - timedelta(minutes = 10)
         db_session = self.db.fetch_session(session_id=session_id, from_date=_from_date)
-        db_data = db_session.get('sensor_records')
-        db_data = db_data.groupby(db_data.index // 60).mean()
-        db_data = db_data.sort_values('timestamp', ascending=True).reset_index(drop=True)
-        #lag_features = db_data['value'].to_list()[-10:]
-        #model = LSTM_CO2_Estimator(len_lag_feat=10)
-        #pred = model.predict(lag_features)
-        estimate(db_session, 'lstm')
-
         response_mess = {
-            'co2_level_pred': pred,
+            'co2_level_pred': estimate(db_session),
             'should_terminate_meeting_in': 10.0,
         }
         return jsonify(response_mess)
